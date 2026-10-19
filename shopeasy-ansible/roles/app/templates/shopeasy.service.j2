@@ -1,0 +1,13 @@
+[Unit]
+Description=ShopEasy Node.js backend
+After=network.target
+
+[Service]
+User={{ app_user }}
+WorkingDirectory={{ app_dir }}
+ExecStart=/usr/bin/node server.js
+Restart=always
+EnvironmentFile={{ app_dir }}/.env
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,6 @@
+---
+- name: Restart shopeasy
+  ansible.builtin.systemd:
+    name: shopeasy
+    state: restarted
+    daemon_reload: true

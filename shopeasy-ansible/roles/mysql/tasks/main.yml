@@ -1,0 +1,36 @@
+---
+- name: Install MySQL server and the Python driver
+  ansible.builtin.apt:
+    name:
+      - mysql-server
+      - python3-pymysql
+    state: present
+
+- name: Allow connections from the web servers
+  ansible.builtin.template:
+    src: shopeasy.cnf.j2
+    dest: /etc/mysql/mysql.conf.d/shopeasy.cnf
+    mode: "0644"
+  notify: Restart mysql
+
+- name: Make sure MySQL is running and starts on boot
+  ansible.builtin.service:
+    name: mysql
+    state: started
+    enabled: true
+
+- name: Create the application database
+  community.mysql.mysql_db:
+    name: "{{ db_name }}"
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Create the application database user
+  community.mysql.mysql_user:
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    host: "{{ db_allowed_hosts }}"
+    priv: "{{ db_name }}.*:ALL"
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  no_log: true

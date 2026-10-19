@@ -1,0 +1,9 @@
+---
+app_repo: https://github.com/example/shopeasy-backend.git
+app_branch: main
+app_port: 3000
+db_host: 192.168.56.21
+db_name: shopeasy
+db_user: shopeasy_app
+# in real use this value lives in an ansible-vault file
+db_password: "ChangeMe@123"

@@ -1,0 +1,26 @@
+---
+# Master playbook for the ShopEasy application
+- name: Base configuration for all servers
+  hosts: shopeasy
+  become: true
+  roles:
+    - role: common
+      tags: [common]
+
+- name: Configure the database server
+  hosts: dbservers
+  become: true
+  roles:
+    - role: mysql
+      tags: [database]
+
+- name: Configure the web servers
+  hosts: webservers
+  become: true
+  roles:
+    - role: nodejs
+      tags: [nodejs]
+    - role: app
+      tags: [app]
+    - role: nginx
+      tags: [nginx]

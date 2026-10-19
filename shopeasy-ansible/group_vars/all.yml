@@ -1,0 +1,10 @@
+---
+app_name: shopeasy
+app_user: shopeasy
+app_dir: /opt/shopeasy
+timezone: Asia/Kolkata
+common_packages:
+  - git
+  - curl
+  - unzip
+  - htop

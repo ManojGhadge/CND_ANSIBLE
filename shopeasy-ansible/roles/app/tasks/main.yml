@@ -1,0 +1,45 @@
+---
+- name: Create application directory
+  ansible.builtin.file:
+    path: "{{ app_dir }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    mode: "0755"
+
+- name: Pull the application code from GitHub
+  ansible.builtin.git:
+    repo: "{{ app_repo }}"
+    dest: "{{ app_dir }}"
+    version: "{{ app_branch }}"
+  become_user: "{{ app_user }}"
+  notify: Restart shopeasy
+
+- name: Install npm dependencies
+  community.general.npm:
+    path: "{{ app_dir }}"
+    production: true
+  become_user: "{{ app_user }}"
+
+- name: Create the .env file
+  ansible.builtin.template:
+    src: env.j2
+    dest: "{{ app_dir }}/.env"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    mode: "0600"
+  notify: Restart shopeasy
+
+- name: Install the systemd service
+  ansible.builtin.template:
+    src: shopeasy.service.j2
+    dest: /etc/systemd/system/shopeasy.service
+    mode: "0644"
+  notify: Restart shopeasy
+
+- name: Start the application service
+  ansible.builtin.systemd:
+    name: shopeasy
+    state: started
+    enabled: true
+    daemon_reload: true

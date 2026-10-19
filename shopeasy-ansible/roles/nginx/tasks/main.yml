@@ -1,0 +1,31 @@
+---
+- name: Install Nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+
+- name: Remove the default site
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: Reload nginx
+
+- name: Add reverse proxy configuration for ShopEasy
+  ansible.builtin.template:
+    src: shopeasy.conf.j2
+    dest: /etc/nginx/sites-available/shopeasy.conf
+    mode: "0644"
+  notify: Reload nginx
+
+- name: Enable the ShopEasy site
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/shopeasy.conf
+    dest: /etc/nginx/sites-enabled/shopeasy.conf
+    state: link
+  notify: Reload nginx
+
+- name: Make sure Nginx is running and enabled
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true

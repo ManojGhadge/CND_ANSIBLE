@@ -1,0 +1,6 @@
+---
+db_name: shopeasy
+db_user: shopeasy_app
+db_password: "ChangeMe@123"
+db_allowed_hosts: "192.168.56.%"
+mysql_bind_address: "0.0.0.0"
